@@ -1,0 +1,17 @@
+fire: {air: '', earth: '', fire: '', water: ''}
+water: {air: '', earth: '', fire: '', water: water}
+
+
+'fire', 
+'water',
+'Earth'
+'air'
+'electric', 
+'grass', 
+'ice', 
+'poison', 
+'metal', = fire + earth
+'Spirit', = air + air
+'darkness' = 
+'Light' = darkness + spirit
+, 'fairy']
