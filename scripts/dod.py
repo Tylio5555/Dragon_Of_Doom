@@ -65,9 +65,10 @@ dragon_values[key] = value_function(dragon_values["level"],
 
 def value_function(x, n=1.5, a=1, b=0):
     """
+    x = level
+    n = power
     b = Base stat value
     a = proficiency
-    x = level
     """
     return x**n + a*x + b
 
@@ -249,6 +250,9 @@ class dragon():
                                               b=getattr(self, "b_" + key)
                                               )
                     )
+        self.atk_spe_cost = affine_value_function(self.atk_spe_cost,
+                                                  a=self.proficiency/10 + 1,
+                                                  b=1)*2
 
     def attack_damage(self):
         """
@@ -275,9 +279,9 @@ class dragon():
 
 
 """
-╔╗ ╔═╗╔╦╗╔╦╗╦  ╔═╗  ╦╔╗╔╔═╗╔╦╗╔═╗╔╗╔╔═╗╔═╗
-╠╩╗╠═╣ ║  ║ ║  ║╣   ║║║║╚═╗ ║ ╠═╣║║║║  ║╣
-╚═╝╩ ╩ ╩  ╩ ╩═╝╚═╝  ╩╝╚╝╚═╝ ╩ ╩ ╩╝╚╝╚═╝╚═╝
+╔╗ ╔═╗╔╦╗╔╦╗╦  ╔═╗  ═╦═╔╗╔╔═╗╔╦╗╔═╗╔╗╔╔═╗╔═╗
+╠╩╗╠═╣ ║  ║ ║  ║╣    ║ ║║║╚═╗ ║ ╠═╣║║║║  ║╣
+╚═╝╩ ╩ ╩  ╩ ╩═╝╚═╝  ═╩═╝╚╝╚═╝ ╩ ╩ ╩╝╚╝╚═╝╚═╝
 """
 
 
@@ -311,6 +315,7 @@ class battle_instance():
 
     def resolve_battle(self):
         print("Fight in Progress", "")
+        # For user experience
         time.sleep(1)
         while True:
             # print("p_dragon hp: ", round(self.p_dragon.hp))
@@ -348,6 +353,7 @@ class game_world():
         self.town_choices = {"a": self.arena,
                              "s": self.shop,
                              "b": self.breed,
+                             "t": self.team_manager,
                              "sa": self.save_world,
                              "l": self.load_world,
                              "q": self.gw_quit}
@@ -364,10 +370,15 @@ class game_world():
                              "g": self.main_town}
         self.shop_dragon_choices = {"g": self.shop}
 
+        self.team_manager_choices = {"b": self.breed,
+                                     "f": self.team_manager_free,
+                                     "g": self.main_town}
+
         self.dragon_of_doom = dragon(generate_dragon_values(name="Leviathan",
                                                             elem_type="Darkness",
                                                             level=10))
 
+        
         self.ascii_town = load_ascii("ascii_town.txt")
         self.ascii_shop = load_ascii("ascii_shop.txt")
         self.ascii_arena = load_ascii("ascii_arena.txt")
@@ -412,7 +423,10 @@ class game_world():
         return "Coward die in shame"
 
     def show_owned_dragon(self):
-        show_all_stats(self.dragons_list)
+        if not self.dragons_list:
+            print("", "", "No dragons owned.")
+        else:
+            show_all_stats(self.dragons_list)
         """
         for d in self.dragons_list:
             print("")
@@ -423,7 +437,7 @@ class game_world():
         txt = ["", "",
                "You're in the Town, where do you want to go?",
                "(A)rena    (S)hop",
-               "(B)reed    ",
+               "(B)reed    (T)eam management",
                "(Sa)ve     (L)oad",
                "(Q)uit"]
         print_list(self.ascii_town)
@@ -438,6 +452,33 @@ class game_world():
 
         return self.town_choices[action]()
 
+    def team_manager(self):
+        self.show_owned_dragon()
+        txt = ["", "",
+               "You're in the Team manager screen",
+               "(B)reed    (F)ree",
+               "(G)o back to town"]
+        print_list(txt)
+        action = req_input(self.team_manager_choices)
+        return self.team_manager_choices[action]()
+
+    def team_manager_free(self):
+        self.show_owned_dragon()
+        txt = ["", "",
+               "Which Dragon would you like to set free:",
+               "(1), (2) ... (n)",
+               "(G)o back to team manager."]
+        print_list(txt)
+        action = input()
+        if action.isdigit():
+            try:
+                print("Farewell " + self.dragons_list[int(action)-1].name)
+                del self.dragons_list[int(action)-1]
+            except:
+                print("No dragon with that number.")
+
+        return self.team_manager()
+        
     def arena(self):
         txt = ["",
                "You're in the Arena:",
@@ -638,16 +679,19 @@ class game_world():
             if self.maximum_dragons_list == len(self.dragons_list):
                 print("You cannot add more Dragon to your team.")
                 return self.main_town()
+            try:
+                d_a, d_b = action.split(" ")
+                # new_type = self.type_matrix[d_a.elem_type][d_b.elem_type]
+                new_type = self.dragons_list[int(d_b)-1].elem_type
 
-            d_a, d_b = action.split(" ")
-            # new_type = self.type_matrix[d_a.elem_type][d_b.elem_type]
-            new_type = self.dragons_list[int(d_b)-1].elem_type
-
-            new_d = dragon(generate_dragon_values(elem_type=new_type))
-            print(new_d.name + " is born")
-            show_all_stats([new_d])
-            self.dragons_list.append(new_d)
-            return self.main_town()
+                new_d = dragon(generate_dragon_values(elem_type=new_type))
+                print(new_d.name + " is born")
+                show_all_stats([new_d])
+                self.dragons_list.append(new_d)
+                return self.main_town()
+            except ValueError:
+                print("Invalid Input")
+                return self.main_town()
 
         return self.main_town()
 
