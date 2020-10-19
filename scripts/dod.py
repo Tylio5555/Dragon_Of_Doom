@@ -170,7 +170,7 @@ def generate_dragon(dragon_values={}):
 
 def show_all_stats(list_d):
     """
-
+    Use of PrettyTable module
     """
     x = PrettyTable()
     x.add_column("Number:",
@@ -342,6 +342,7 @@ class game_world():
     """
     def __init__(self):
         self.dragons_list = [generate_dragon()]
+        self.maximum_dragons_list = 3
         self.inventory = []
         self.victory_token = 0
         self.town_choices = {"a": self.arena,
@@ -358,7 +359,8 @@ class game_world():
 
         self.arena_find_enemy = {"g": self.main_town}
 
-        self.shop_choices = {"b": None,
+        self.shop_choices = {"b": self.shop_dragon,
+                             "u": self.shop_upgrade,
                              "g": self.main_town}
         self.shop_dragon_choices = {"g": self.shop}
 
@@ -384,6 +386,7 @@ class game_world():
         savename = input("Choose a savename:")
         with open("saves/" + savename, "wb") as savefile:
             pickle.dump([self.dragons_list,
+                         self.maximum_dragons_list,
                          self.inventory,
                          self.victory_token,
                          self.dragon_of_doom],
@@ -398,9 +401,10 @@ class game_world():
         with open("saves/" + savename, "rb") as savefile:
             attr_list = pickle.load(savefile)
         self.dragon_list = attr_list[0]
-        self.inventory = attr_list[1]
-        self.victory_token = attr_list[2]
-        self.dragon_of_doom = attr_list[3]
+        self.maximum_dragons_list = attr_list[1]
+        self.inventory = attr_list[2]
+        self.victory_token = attr_list[3]
+        self.dragon_of_doom = attr_list[4]
         print("Save loaded.")
 
     def gw_quit(self):
@@ -562,20 +566,25 @@ class game_world():
                         "The winner is now the new Dragon of Doom!!!"])
             self.dragon_of_doom = self.dragons_list[num-1]
             self.dragons_list.remove(self.dragons_list[num-1])
+            self.victory_token += 1
 
         return self.main_town()
 
     def shop(self):
         txt = ["", "",
                "You're in the shop:",
-               "(B)uy a Dragon",
+               "(B)uy a Dragon,    Buy an (u)pgrade",
                "(G)o back to town"
                ]
         print_list(self.ascii_shop)
         print_list(txt)
         action = req_input(self.shop_choices)
         if action == "b":
-            return self.shop_dragon()
+            if self.maximum_dragons_list == len(self.dragons_list):
+                print("You cannot add more Dragon to your team.")
+                return self.shop()
+            else:
+                return self.shop_dragon()
 
         return self.shop_choices[action]()
 
@@ -595,6 +604,25 @@ class game_world():
             return self.shop_dragon()
         else:
             return self.shop()
+    
+    def shop_upgrade(self):
+        txt = ["Which upgrade would you like to buy?",
+               "(1) Augment the maximum number of Dragon : 1VT",
+               "",
+               "(G)o back to shop"]
+        print_list(txt)
+        action = req_input(["1","g"])
+        if action == "1":
+            if self.victory_token >= 1:
+                self.victory_token -= 1
+                self.maximum_dragons_list += 1
+                print("Maximum sized augmented")
+            else:
+                print("You don't have enough victory token.")
+            return self.shop()
+        else:
+            return self.shop()
+        
 
     def breed(self):
         print("", "Which Dragon do you want to breed?")
@@ -607,24 +635,22 @@ class game_world():
         if action == "g":
             return self.main_town()
         else:
-            # try:
+            if self.maximum_dragons_list == len(self.dragons_list):
+                print("You cannot add more Dragon to your team.")
+                return self.main_town()
+
             d_a, d_b = action.split(" ")
             # new_type = self.type_matrix[d_a.elem_type][d_b.elem_type]
             new_type = self.dragons_list[int(d_b)-1].elem_type
-            #
+
             new_d = dragon(generate_dragon_values(elem_type=new_type))
             print(new_d.name + " is born")
             show_all_stats([new_d])
             self.dragons_list.append(new_d)
             return self.main_town()
-            """
-            except:
-                print("error")
-                return self.main_town()
-            """
+
         return self.main_town()
 
 
 if __name__ == "__main__":
-    # os.chdir(os.getcwd())
     game_world().main_town()
