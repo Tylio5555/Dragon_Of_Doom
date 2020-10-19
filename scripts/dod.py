@@ -234,7 +234,7 @@ class dragon():
                   "fighting the Dragon Of Doom")
             return "max level"
 
-        self.level += 1
+        self.level += nb_level
         self.hp = value_function(self.level / 5,
                                  a=self.proficiency/10 + 5,
                                  b=1)*15
@@ -515,7 +515,8 @@ class game_world():
             print("Your dragon is victorious!")
             if self.dragons_list[num-1].level < 10:
                 print("And leveled up!")
-                self.dragons_list[num-1].level_up()
+                nbl = enemy_dragons[e_num-1] - self.dragons_list[num-1] + 1
+                self.dragons_list[num-1].level_up(nb_level=nbl)
             else:
                 print("Your Dragon is at maximum level, "
                       "consider training another one instead.")
@@ -583,13 +584,15 @@ class game_world():
         show_all_stats(l_dragon)
         txt = ["Which Dragon would you like to buy?",
                "(1), (2) or (3)",
-               "(G)o back to shop"]
+               "(G)o back to shop, (L)ook again"]
         print_list(txt)
         action = req_input(["1", "2", "3", "g"])
         if action in ["1", "2", "3"]:
             self.dragons_list.append(l_dragon[int(action)-1])
             print("Dragon bought!!!")
             return self.shop()
+        elif action == "l":
+            return self.shop_dragon()
         else:
             return self.shop()
 
@@ -623,4 +626,5 @@ class game_world():
 
 
 if __name__ == "__main__":
+    # os.chdir(os.getcwd())
     game_world().main_town()
