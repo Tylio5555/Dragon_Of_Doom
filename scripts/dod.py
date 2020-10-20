@@ -384,7 +384,7 @@ class game_world():
                                                             elem_type="darkness",
                                                             level=10))
 
-        
+
         self.ascii_town = load_ascii("ascii_town.txt")
         self.ascii_shop = load_ascii("ascii_shop.txt")
         self.ascii_arena = load_ascii("ascii_arena.txt")
@@ -469,7 +469,8 @@ class game_world():
     def team_manager(self):
         self.show_owned_dragon()
         txt = ["", "",
-               "You're in the Team manager screen",
+               "You're in the Team manager screen:",
+               "You got " + str(self.victory_token) + " Victory Token.",
                "(B)reed    (F)ree",
                "(G)o back to town"]
         print_list(txt)
@@ -492,7 +493,7 @@ class game_world():
                 print("No dragon with that number.")
 
         return self.team_manager()
-        
+
     def arena(self):
         txt = ["",
                "You're in the Arena:",
@@ -659,14 +660,15 @@ class game_world():
             return self.shop_dragon()
         else:
             return self.shop()
-    
+
     def shop_upgrade(self):
         txt = ["Which upgrade would you like to buy?",
+               "You got " + str(self.victory_token) + " Victory Token (VT).",
                "(1) Augment the maximum number of Dragon : 1VT",
                "",
                "(G)o back to shop"]
         print_list(txt)
-        action = req_input(["1","g"])
+        action = req_input(["1", "g"])
         if action == "1":
             if self.victory_token >= 1:
                 self.victory_token -= 1
@@ -677,7 +679,7 @@ class game_world():
             return self.shop()
         else:
             return self.shop()
-        
+
 
     def breed(self):
         print("", "Which Dragon do you want to breed?")
