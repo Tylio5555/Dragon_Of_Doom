@@ -3,7 +3,7 @@
 """
 Created on Tue Oct 13 09:36:12 2020
 
-@author: mickael
+@author: Mickael MELKOWSKI
 """
 import random
 import pickle
@@ -12,7 +12,7 @@ import yaml
 # import os
 import time
 
-# Vol honteux de script pour pas faire dl de module hors Conda
+# Vol honteux de script pour pas faire dl de module
 # from prettytable import PrettyTable
 from prettyt import PrettyTable
 
@@ -178,7 +178,7 @@ def generate_dragon(dragon_values={}):
 
 def show_all_stats(list_d):
     """
-    Use of PrettyTable module
+    Use of PrettyTable module to show a list of dragon object.
     """
     x = PrettyTable()
     x.add_column("Number:",
@@ -212,7 +212,7 @@ def show_all_stats(list_d):
 class dragon():
     def __init__(self, dragon_values):
         """
-        Expected arguments:
+        Expected attribute to be created:
         self.name = dragon_values["name"]
         self.elem_type = dragon_values["elem_type"]
         self.sex = dragon_values["sex"]
@@ -244,6 +244,10 @@ class dragon():
             return "max level"
 
         self.level += nb_level
+        if self.level > 10:
+            self.level = 10
+
+        # Values Update:
         self.hp = value_function(self.level / 5,
                                  a=self.proficiency/10 + 5,
                                  b=1)*15
@@ -306,20 +310,7 @@ class battle_instance():
         """
         Useless
         """
-        print("name: ", self.p_dragon.name, self.e_dragon.name)
-        print("elem_type: ", self.p_dragon.elem_type, self.e_dragon.elem_type)
-        print("level: ", self.p_dragon.level, self.e_dragon.level)
-        print("hp: ", self.p_dragon.hp, self.e_dragon.hp)
-        print("mp: ", self.p_dragon.mp, self.e_dragon.mp)
-        print("attack: ", self.p_dragon.attack, self.e_dragon.attack)
-        print("attack_spe: ", self.p_dragon.attack_spe,
-              self.e_dragon.attack_spe)
-        print("defense: ", self.p_dragon.defense,
-              self.e_dragon.defense)
-        print("defense_spe: ", self.p_dragon.defense_spe,
-              self.e_dragon.defense_spe)
-        print("Rating:", self.p_dragon.proficiency, self.e_dragon.proficiency)
-        print("\n")
+        show_all_stats([self.p_dragon.name, self.e_dragon.name])
 
     def resolve_battle(self):
         print("Fight in Progress...", "")
@@ -355,7 +346,7 @@ class game_world():
     """
     def __init__(self):
         self.dragons_list = [generate_dragon()]
-        self.maximum_dragons_list = 3
+        self.maximum_dragons_list = 5
         self.inventory = []
         self.victory_token = 0
         self.town_choices = {"a": self.arena,
@@ -472,6 +463,8 @@ class game_world():
         txt = ["", "",
                "You're in the Team manager screen:",
                "You got " + str(self.victory_token) + " Victory Token.",
+               "Your maximum amount of Dragons is: " + self.maximum_dragons_list,
+               "",
                "(B)reed    (F)ree",
                "(G)o back to town"]
         print_list(txt)
@@ -529,7 +522,6 @@ class game_world():
         print_list(txt)
 
         self.show_owned_dragon()
-        # show_all_stats(self.dragons_list)
 
         action = input()
         if action == "g":
@@ -630,7 +622,7 @@ class game_world():
     def shop(self):
         txt = ["", "",
                "You're in the shop:",
-               "(B)uy a Dragon,    Buy an (u)pgrade",
+               "(B)uy a Dragon,    Buy an (U)pgrade",
                "(G)o back to town"
                ]
         print_list(self.ascii_shop)
@@ -674,7 +666,7 @@ class game_world():
             if self.victory_token >= 1:
                 self.victory_token -= 1
                 self.maximum_dragons_list += 1
-                print("Maximum sized augmented")
+                print("Maximum team size augmented.")
             else:
                 print("You don't have enough victory token.")
             return self.shop()
@@ -684,17 +676,19 @@ class game_world():
     def breed(self):
         print("", "Which Dragon do you want to breed?")
         self.show_owned_dragon()
-        txt = ["Expected '1 3' for (1) and (3)",
+        txt = ["Expected: '1 3' for the Dragons (1) and (3)",
                "(G)o back to town"]
         print_list(txt)
 
         action = input()
         if action == "g":
             return self.main_town()
+
         else:
             if self.maximum_dragons_list == len(self.dragons_list):
                 print("You cannot add more Dragon to your team.")
                 return self.main_town()
+
             try:
                 d_a, d_b = action.split(" ")
                 new_type = self.type_matrix[self.dragons_list[int(d_a)-1].elem_type][self.dragons_list[int(d_b)-1].elem_type]
@@ -704,7 +698,8 @@ class game_world():
                 show_all_stats([new_d])
                 self.dragons_list.append(new_d)
                 return self.main_town()
-            except ValueError:
+
+            except (ValueError, IndexError):
                 print("Invalid Input")
                 return self.main_town()
 
