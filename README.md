@@ -2,11 +2,11 @@
 
 Dragon of Doom est un mini-jeu de combat de Dragons.
 
-Votre but est d'entrainer un Dragon pour lui faire affronter les boss de l'arène, le Dragon of Doom!
+Votre but est d'entrainer un Dragon pour lui faire affronter le boss de l'arène, le Dragon of Doom!
 Soyez gagnant et alors votre Dragon deviendra le nouveau boss à retourner affronter.
 Chaque victoire vous apporte des Victory Token a dépenser en améliorations.
 
-Dragon of Doom est au final un jeu de paris. Est ce que mon dragon peut tuer son Dragon.
+Dragon of Doom est un jeu de paris. Est ce que mon dragon peut tuer son Dragon.
 
 
 
@@ -20,7 +20,7 @@ il ya plusieurs types elementaires de dragons, ceux ci sont classé en 3 rangs:
 - Rang 3:
 	Spirit, Darkness, Light
 
-La reproduction de dragons permet d'obtenir des dragons de rang supérieurs dont les combinaisons seront a vous de trouver.
+La reproduction de dragons permet d'obtenir des dragons de rang supérieurs dont les combinaisons seront à vous de trouver.
 
 
 - Le Rating est la facon dont vont evoluer ses stats:
