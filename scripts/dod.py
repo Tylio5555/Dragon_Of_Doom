@@ -210,6 +210,7 @@ def show_all_stats(list_d):
 class dragon():
     def __init__(self, dragon_values):
         """
+        Expected arguments:
         self.name = dragon_values["name"]
         self.elem_type = dragon_values["elem_type"]
         self.sex = dragon_values["sex"]
@@ -319,7 +320,7 @@ class battle_instance():
         print("\n")
 
     def resolve_battle(self):
-        print("Fight in Progress", "")
+        print("Fight in Progress...", "")
         # For user experience
         time.sleep(1)
         while True:
@@ -392,6 +393,15 @@ class game_world():
 
         print("Welcome in Dragon of Doom !!!", "", "")
 
+    def autosave(self):
+        with open("saves/autosave", "wb") as savefile:
+            pickle.dump([self.dragons_list,
+                         self.maximum_dragons_list,
+                         self.inventory,
+                         self.victory_token,
+                         self.dragon_of_doom],
+                        savefile)
+
     def save_world(self):
         """
         save attribute in a pickle file
@@ -436,6 +446,7 @@ class game_world():
         """
 
     def main_town(self):
+
         txt = ["", "",
                "You're in the Town, where do you want to go?",
                "(A)rena    (S)hop",
@@ -451,7 +462,8 @@ class game_world():
         elif action == "l":
             self.load_world()
             return self.main_town()
-
+        # Autosave
+        self.autosave()
         return self.town_choices[action]()
 
     def team_manager(self):
@@ -562,7 +574,7 @@ class game_world():
             print("Your dragon is victorious!")
             if self.dragons_list[num-1].level < 10:
                 print("And leveled up!")
-                nbl = enemy_dragons[e_num-1] - self.dragons_list[num-1] + 1
+                nbl = enemy_dragons[e_num-1].level - self.dragons_list[num-1].level + 1
                 self.dragons_list[num-1].level_up(nb_level=nbl)
             else:
                 print("Your Dragon is at maximum level, "
@@ -638,7 +650,7 @@ class game_world():
                "(1), (2) or (3)",
                "(G)o back to shop, (L)ook again"]
         print_list(txt)
-        action = req_input(["1", "2", "3", "g"])
+        action = req_input(["1", "2", "3", "l", "g"])
         if action in ["1", "2", "3"]:
             self.dragons_list.append(l_dragon[int(action)-1])
             print("Dragon bought!!!")

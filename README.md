@@ -29,6 +29,7 @@ La reproduction de dragons permet d'obtenir des dragons de rang supérieurs dont
 
 - Dégat d'attaque:
     Calculer selon la formule suivante:
-        ((level*0.4 + 2)*Atk>)/enemy_def
+        ((level*0.4 + 2)*Atk)/enemy_def
         l'attaque et la defense sont choisi entre normal et spécial depandant
         si le dragon qui attaque a son attaque spé plus forte et qu'il lui reste des mp pour pouvoir l'utiliser.
+
