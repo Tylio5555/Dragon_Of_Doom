@@ -61,11 +61,13 @@ def req_input(list_possible):
 def hp_fct(x, a, b):
     return value_function(x, a=a, b=b)
 
+
 """
 dragon_values[key] = value_function(dragon_values["level"],
                                             a=dragon_values["proficiency"],
                                             b=dragon_values["b_" + key])
 """
+
 
 def value_function(x, n=1.5, a=1, b=0):
     """
@@ -384,7 +386,6 @@ class game_world():
                                                             elem_type="darkness",
                                                             level=10))
 
-
         self.ascii_town = load_ascii("ascii_town.txt")
         self.ascii_shop = load_ascii("ascii_shop.txt")
         self.ascii_arena = load_ascii("ascii_arena.txt")
@@ -489,7 +490,7 @@ class game_world():
             try:
                 print("Farewell " + self.dragons_list[int(action)-1].name)
                 del self.dragons_list[int(action)-1]
-            except:
+            except (IndexError, ValueError):
                 print("No dragon with that number.")
 
         return self.team_manager()
@@ -679,7 +680,6 @@ class game_world():
             return self.shop()
         else:
             return self.shop()
-
 
     def breed(self):
         print("", "Which Dragon do you want to breed?")
