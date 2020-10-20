@@ -37,6 +37,12 @@ def load_ascii(filename):
     return [elt.strip("\n") for elt in ascii_txt]
 
 
+def load_dict_yaml(fname):
+    with open(fname, "r") as f:
+        d_elem = yaml.load(f)
+    return d_elem
+
+
 def req_input(list_possible):
     """
     Request input from user within a list of possible choice.
@@ -52,9 +58,7 @@ def req_input(list_possible):
     return action.lower()
 
 
-def hp_fct(x):
-    a = 1
-    b = 0
+def hp_fct(x, a, b):
     return value_function(x, a=a, b=b)
 
 """
@@ -123,10 +127,10 @@ def generate_dragon_values(name="",
     dragon_values["b_defense_spe"] = b_defense_spe
 
     if not elem_type:
-        dragon_values["elem_type"] = random.choice(["Air",
-                                                    "Fire",
-                                                    "Water",
-                                                    "Earth"])
+        dragon_values["elem_type"] = random.choice(["air",
+                                                    "fire",
+                                                    "water",
+                                                    "earth"])
 
     if not sex:
         dragon_values["sex"] = random.choice(["male", "female"])
@@ -141,7 +145,7 @@ def generate_dragon_values(name="",
         dragon_values["proficiency"] = random.randint(1, 10)
 
     if not hp:
-        dragon_values["hp"] = affine_value_function(dragon_values["level"]/5,
+        dragon_values["hp"] = affine_value_function(dragon_values["level"]/10,
                                                     a=dragon_values["proficiency"]/10 + 5,
                                                     b=10)*15
     if not mp:
@@ -151,10 +155,11 @@ def generate_dragon_values(name="",
     if not xp:
         dragon_values["xp"] = 0
 
-    # base stat nudge by the elem type
+    # base stat nudge by the elem type:
+    d_b_stat = load_dict_yaml("base_stat.yaml")
     for key in ["attack", "defense", "attack_spe", "defense_spe"]:
         if dragon_values["b_" + key] == "":
-            dragon_values["b_" + key] = random.randint(1, 10)
+            dragon_values["b_" + key] = d_b_stat[dragon_values["elem_type"]]["b_" + key]  # random.randint(1, 10)
 
         dragon_values[key] = value_function(dragon_values["level"],
                                             a=dragon_values["proficiency"],
@@ -182,7 +187,7 @@ def show_all_stats(list_d):
     for d in list_d:
         x.add_column(str(i),
                      [d.name,
-                      d.elem_type,
+                      d.elem_type.capitalize(),
                       d.level,
                       round(d.hp),
                       round(d.mp),
@@ -375,7 +380,7 @@ class game_world():
                                      "g": self.main_town}
 
         self.dragon_of_doom = dragon(generate_dragon_values(name="Leviathan",
-                                                            elem_type="Darkness",
+                                                            elem_type="darkness",
                                                             level=10))
 
         
@@ -383,10 +388,7 @@ class game_world():
         self.ascii_shop = load_ascii("ascii_shop.txt")
         self.ascii_arena = load_ascii("ascii_arena.txt")
 
-        self.type_matrix = {"Water":["","","",""],
-                            "Fire":["","","",""],
-                            "Earth":["","","",""],
-                            "":["","","",""],}
+        self.type_matrix = load_dict_yaml("matrix_elem.yaml")
 
         print("Welcome in Dragon of Doom !!!", "", "")
 
@@ -681,9 +683,8 @@ class game_world():
                 return self.main_town()
             try:
                 d_a, d_b = action.split(" ")
-                # new_type = self.type_matrix[d_a.elem_type][d_b.elem_type]
-                new_type = self.dragons_list[int(d_b)-1].elem_type
-
+                new_type = self.type_matrix[self.dragons_list[int(d_a)-1].elem_type][self.dragons_list[int(d_b)-1].elem_type]
+                # new_type = self.dragons_list[int(d_b)-1].elem_type
                 new_d = dragon(generate_dragon_values(elem_type=new_type))
                 print(new_d.name + " is born")
                 show_all_stats([new_d])
