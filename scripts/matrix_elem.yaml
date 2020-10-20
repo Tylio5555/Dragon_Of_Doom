@@ -1,17 +1,11 @@
-fire: {air: '', earth: '', fire: '', water: ''}
-water: {air: '', earth: '', fire: '', water: water}
-
-
-'fire', 
-'water',
-'Earth'
-'air'
-'electric', 
-'grass', 
-'ice', 
-'poison', 
-'metal', = fire + earth
-'Spirit', = air + air
-'darkness' = 
-'Light' = darkness + spirit
-, 'fairy']
+fire: {fire: fire, water: water, air: lightning, earth: metal, metal: metal, lightning: lightning, ice: ice, nature: nature, spirit: spirit, darkness: darkness, light: light}
+water: {fire: fire, water: water, air: air, earth: nature, metal: metal, lightning: lightning, ice: ice, nature: nature, spirit: spirit, darkness: darkness, light: light}
+air: {fire: fire, water: ice, air: lightning, earth: metal, metal: metal, lightning: lightning, ice: ice, nature: nature, spirit: spirit, darkness: darkness, light: light}
+earth: {fire: metal, water: nature, air: air, earth: earth, metal: metal, lightning: lightning, ice: ice, nature: nature, spirit: spirit, darkness: darkness, light: light}
+metal: {fire: metal, water: metal, air: metal, earth: metal, metal: metal, lightning: metal, ice: metal, nature: darkness, spirit: spirit, darkness: darkness, light: light}
+lightning: {fire: lightning, water: lightning, air: lightning, earth: lightning, metal: lightning, lightning: lightning, ice: lightning, nature: light, spirit: spirit, darkness: darkness, light: light}
+ice: {fire: ice, water: ice, air: ice, earth: ice, metal: ice, lightning: ice, ice: ice, nature: ice, spirit: spirit, darkness: darkness, light: light}
+nature: {fire: nature, water: nature, air: spirit, earth: nature, metal: darkness, lightning: light, ice: nature, nature: nature, spirit: spirit, darkness: darkness, light: light}
+spirit: {fire: spirit, water: spirit, air: spirit, earth: spirit, metal: spirit, lightning: spirit, ice: spirit, nature: spirit, spirit: spirit, darkness: spirit, light: spirit}
+darkness: {fire: darkness, water: darkness, air: darkness, earth: darkness, metal: darkness, lightning: darkness, ice: darkness, nature: darkness, spirit: darkness, darkness: darkness, light: darkness}
+light: {fire: light, water: light, air: light, earth: light, metal: light, lightning: light, ice: light, nature: light, spirit: light, darkness: light, light: light}
