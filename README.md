@@ -12,13 +12,13 @@ Dragon of Doom est un jeu de paris. Est ce que mon dragon peut tuer son Dragon.
 
 Détails sur les Dragons:
 
-il ya plusieurs types elementaires de dragons, ceux ci sont classé en 3 rangs:
-- Rang 1:
-	Fire, Water, Air, Earth
-- Rang 2:
-	Metal, Lightning, Ice, Nature
-- Rang 3:
-	Spirit, Darkness, Light
+- il ya plusieurs types elementaires de dragons, ceux ci sont classé en 3 rangs:
+    - Rang 1:
+    	Fire, Water, Air, Earth
+    - Rang 2:
+    	Metal, Lightning, Ice, Nature
+    - Rang 3:
+    	Spirit, Darkness, Light
 
 La reproduction de dragons permet d'obtenir des dragons de rang supérieurs dont les combinaisons seront à vous de trouver.
 
@@ -33,3 +33,6 @@ La reproduction de dragons permet d'obtenir des dragons de rang supérieurs dont
         l'attaque et la defense sont choisi entre normal et spécial depandant
         si le dragon qui attaque a son attaque spé plus forte et qu'il lui reste des mp pour pouvoir l'utiliser.
 
+- Autosave:
+    Le jeu possède un system d'autosave qui sauvegarde la progression du joueur juste avant la selection d'une action dans la ville principale
+    Ce n'est pas une feature sur laquelle il faut dependre mais en cas de crash le joueur doit directement relancer et faire Load et mettre en nom de fichier à load: "autosave"
