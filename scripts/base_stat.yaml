@@ -1,11 +1,11 @@
-fire: {"b_attack": 3, "b_defense": 2, "b_attack_spe": 3, "b_defense_spe": 2}
-water: {"b_attack": 2, "b_defense": 3, "b_attack_spe": 2, "b_defense_spe": 3}
-air: {"b_attack": 2, "b_defense": 2, "b_attack_spe": 3, "b_defense_spe": 3}
-earth: {"b_attack": 3, "b_defense": 3, "b_attack_spe": 2, "b_defense_spe": 2}
-metal: {"b_attack": 2.5, "b_defense": 3, "b_attack_spe": 2, "b_defense_spe": 2.5}
-lightning: {"b_attack": 2.5, "b_defense": 2, "b_attack_spe": 3, "b_defense_spe": 2.5}
-ice: {"b_attack": 2, "b_defense": 3, "b_attack_spe": 2, "b_defense_spe": 3}
-nature: {"b_attack": 2.5, "b_defense": 2.5, "b_attack_spe": 2.5, "b_defense_spe": 2.5}
-spirit: {"b_attack": 2, "b_defense": 2.5, "b_attack_spe": 2.5, "b_defense_spe": 3}
-darkness: {"b_attack": 3, "b_defense": 2, "b_attack_spe": 2.5, "b_defense_spe": 2.5}
-light: {"b_attack": 2, "b_defense": 2.5, "b_attack_spe": 3, "b_defense_spe": 2.5}
+fire: {"b_attack": 3, "b_defense": 2, "b_attack_spe": 3, "b_defense_spe": 2, "b_hp": 10}
+water: {"b_attack": 2, "b_defense": 3, "b_attack_spe": 2, "b_defense_spe": 3, "b_hp": 10}
+air: {"b_attack": 2, "b_defense": 2, "b_attack_spe": 3, "b_defense_spe": 3, "b_hp": 10}
+earth: {"b_attack": 3, "b_defense": 3, "b_attack_spe": 2, "b_defense_spe": 2, "b_hp": 10}
+metal: {"b_attack": 2.5, "b_defense": 3, "b_attack_spe": 2, "b_defense_spe": 2.5, "b_hp": 10}
+lightning: {"b_attack": 2.5, "b_defense": 2, "b_attack_spe": 3, "b_defense_spe": 2.5, "b_hp": 10}
+ice: {"b_attack": 2, "b_defense": 3, "b_attack_spe": 2, "b_defense_spe": 3, "b_hp": 10}
+nature: {"b_attack": 2.5, "b_defense": 2.5, "b_attack_spe": 2.5, "b_defense_spe": 2.5, "b_hp": 10}
+spirit: {"b_attack": 2, "b_defense": 2.5, "b_attack_spe": 2.5, "b_defense_spe": 3, "b_hp": 10}
+darkness: {"b_attack": 3, "b_defense": 2, "b_attack_spe": 2.5, "b_defense_spe": 2.5, "b_hp": 10}
+light: {"b_attack": 2, "b_defense": 2.5, "b_attack_spe": 3, "b_defense_spe": 2.5, "b_hp": 10}

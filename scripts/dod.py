@@ -58,8 +58,7 @@ def req_input(list_possible):
     return action.lower()
 
 
-def hp_fct(x, a, b):
-    return value_function(x, a=a, b=b)
+
 
 
 """
@@ -69,7 +68,7 @@ dragon_values[key] = value_function(dragon_values["level"],
 """
 
 
-def value_function(x, n=1.5, a=1, b=0):
+def value_function(x, n=1.25, a=1, b=0):
     """
     x = level
     n = power
@@ -88,15 +87,19 @@ def affine_value_function(x, a=1, b=0):
     return a*x + b
 
 
-def asses_dragon(dragon_obj):
-    return "it's a " + str(dragon_obj.proficiency) + " Star dragon."
+def stats_value_function(level, rating, base_stat):
+    return value_function(level, n=1.25, a=(rating/10)+1, b=base_stat)
+
+
+def hp_fct(level, rating, b_hp):
+    return value_function(level, a=(rating/20)+1, b=b_hp) * 10
 
 
 def generate_name(sex=""):
     if sex not in ["male", "female"]:
         sex = random.choice(["male", "female"])
-    prefix = load_ascii(sex+"_prefix_dragon_name.txt")
-    suffix = load_ascii(sex+"_suffix_dragon_name.txt")
+    prefix = load_ascii(sex + "_prefix_dragon_name.txt")
+    suffix = load_ascii(sex + "_suffix_dragon_name.txt")
     name = random.choice(prefix) + random.choice(suffix)
     return name.capitalize()
 
@@ -107,6 +110,7 @@ def generate_dragon_values(name="",
                            level="",
                            xp="",
                            proficiency="",
+                           b_hp="",
                            hp="",
                            mp="",
                            b_attack="",
@@ -146,10 +150,7 @@ def generate_dragon_values(name="",
     if not proficiency:
         dragon_values["proficiency"] = random.randint(1, 10)
 
-    if not hp:
-        dragon_values["hp"] = affine_value_function(dragon_values["level"]/10,
-                                                    a=dragon_values["proficiency"]/10 + 5,
-                                                    b=10)*15
+
     if not mp:
         dragon_values["mp"] = value_function(dragon_values["level"],
                                              a=dragon_values["proficiency"],
@@ -159,13 +160,24 @@ def generate_dragon_values(name="",
 
     # base stat nudge by the elem type:
     d_b_stat = load_dict_yaml("base_stat.yaml")
+    elem_stat = d_b_stat[dragon_values["elem_type"]]
+
+    if not b_hp:
+        dragon_values["b_hp"] = elem_stat["b_hp"]
+
+    if not hp:
+        dragon_values["hp"] = hp_fct(dragon_values["level"],
+                                     dragon_values["proficiency"],
+                                     dragon_values["b_hp"])
+    
     for key in ["attack", "defense", "attack_spe", "defense_spe"]:
         if dragon_values["b_" + key] == "":
-            dragon_values["b_" + key] = d_b_stat[dragon_values["elem_type"]]["b_" + key]  # random.randint(1, 10)
+            dragon_values["b_" + key] = elem_stat["b_" + key]  # random.randint(1, 10)
 
-        dragon_values[key] = value_function(dragon_values["level"],
-                                            a=dragon_values["proficiency"],
-                                            b=dragon_values["b_" + key])
+        dragon_values[key] = stats_value_function(dragon_values["level"],
+                                                  dragon_values["proficiency"],
+                                                  dragon_values["b_" + key]
+                                                  )
 
     return dragon_values
 
@@ -248,20 +260,19 @@ class dragon():
             self.level = 10
 
         # Values Update:
-        self.hp = value_function(self.level / 5,
-                                 a=self.proficiency/10 + 5,
-                                 b=1)*15
+        self.hp = hp_fct(self.level, self.proficiency, self.b_hp)
 
         self.mp = value_function(self.level,
                                  a=self.proficiency,
                                  b=1)*2
 
         for key in ["attack", "defense", "attack_spe", "defense_spe"]:
-            setattr(self, key, value_function(self.level,
-                                              a=self.proficiency,
-                                              b=getattr(self, "b_" + key)
-                                              )
+            setattr(self, key, stats_value_function(self.level,
+                                                    self.proficiency,
+                                                    getattr(self, "b_" + key)
+                                                    )
                     )
+
         self.atk_spe_cost = affine_value_function(self.atk_spe_cost,
                                                   a=self.proficiency/10 + 1,
                                                   b=1)*2
