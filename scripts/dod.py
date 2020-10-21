@@ -5,6 +5,10 @@ Created on Tue Oct 13 09:36:12 2020
 
 @author: Mickael MELKOWSKI
 """
+#For specific linux terminal use
+import sys
+sys.path.append("/usr/lib/python3/dist-packages/")
+
 import random
 import pickle
 import copy
@@ -499,13 +503,14 @@ class game_world():
 
         return self.team_manager()
 
-    def arena(self):
+    def arena(self, show_ascii=True):
         txt = ["",
                "You're in the Arena:",
                "(F)ind enemy    (G)o back to town",
                "(S)how owned dragons",
                "Fight the (D)ragon Of Doom"]
-        print_list(self.ascii_arena)
+        if show_ascii:
+            print_list(self.ascii_arena)
         print_list(txt)
         action = req_input(self.arena_choices)
 
@@ -514,12 +519,12 @@ class game_world():
                 print("You don't Have any Dragon.")
             else:
                 self.show_owned_dragon()
-            return self.arena()
+            return self.arena(show_ascii=False)
 
         elif action == "f":
             if not self.dragons_list:
                 print("You don't Have any Dragon to bring in the Arena.")
-                return self.arena()
+                return self.arena(show_ascii=False)
             else:
                 return self.arena_choices[action]()
 
@@ -630,19 +635,20 @@ class game_world():
 
         return self.main_town()
 
-    def shop(self):
+    def shop(self, show_ascii=True):
         txt = ["", "",
                "You're in the shop:",
                "(B)uy a Dragon,    Buy an (U)pgrade",
                "(G)o back to town"
                ]
-        print_list(self.ascii_shop)
+        if show_ascii:
+            print_list(self.ascii_shop)
         print_list(txt)
         action = req_input(self.shop_choices)
         if action == "b":
             if self.maximum_dragons_list == len(self.dragons_list):
                 print("You cannot add more Dragon to your team.")
-                return self.shop()
+                return self.shop(show_ascii=False)
             else:
                 return self.shop_dragon()
 
