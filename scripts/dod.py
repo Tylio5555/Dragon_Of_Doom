@@ -62,16 +62,6 @@ def req_input(list_possible):
     return action.lower()
 
 
-
-
-
-"""
-dragon_values[key] = value_function(dragon_values["level"],
-                                            a=dragon_values["proficiency"],
-                                            b=dragon_values["b_" + key])
-"""
-
-
 def value_function(x, n=1.25, a=1, b=0):
     """
     x = level
@@ -172,10 +162,10 @@ def generate_dragon_values(name="",
         dragon_values["hp"] = hp_fct(dragon_values["level"],
                                      dragon_values["proficiency"],
                                      dragon_values["b_hp"])
-    
+
     for key in ["attack", "defense", "attack_spe", "defense_spe"]:
         if dragon_values["b_" + key] == "":
-            dragon_values["b_" + key] = elem_stat["b_" + key]  # random.randint(1, 10)
+            dragon_values["b_" + key] = elem_stat["b_" + key]
 
         dragon_values[key] = stats_value_function(dragon_values["level"],
                                                   dragon_values["proficiency"],
@@ -244,6 +234,9 @@ class dragon():
         self.atk_spe_cost = 5
 
     def resume(self):
+        """
+        Unused
+        """
         print(self.name + " " +
               self.elem_type + " " +
               "Level: " + self.level + " " +
@@ -313,8 +306,7 @@ class dragon():
 
 class battle_instance():
     """
-    Class in charge of resolving battle
-    between two dragons.
+    Class in charge of resolving battle between two dragons.
     """
     def __init__(self, player_dragon, enemy_dragon):
         self.p_dragon = copy.deepcopy(player_dragon)
@@ -389,6 +381,7 @@ class game_world():
         self.shop_choices = {"b": self.shop_dragon,
                              "u": self.shop_upgrade,
                              "g": self.main_town}
+
         self.shop_dragon_choices = {"g": self.shop}
 
         self.team_manager_choices = {"b": self.breed,
@@ -406,6 +399,8 @@ class game_world():
         print("Welcome in Dragon of Doom !!!", "", "")
 
     def autosave(self):
+        self.save_world(self, autosave=True)
+        """
         with open("saves/autosave", "wb") as savefile:
             pickle.dump([self.dragons_list,
                          self.maximum_dragons_list,
@@ -413,12 +408,17 @@ class game_world():
                          self.victory_token,
                          self.dragon_of_doom],
                         savefile)
+        """
 
-    def save_world(self):
+    def save_world(self, autosave=False):
         """
         save attribute in a pickle file
         """
-        savename = input("Choose a savename:")
+        if autosave:
+            savename = "autosave"
+        else:
+            savename = input("Choose a savename: ")
+
         data_dict = {"dragons_list": self.dragons_list,
                      "maximum_dragons_list": self.maximum_dragons_list,
                      "inventory": self.inventory,
@@ -429,13 +429,16 @@ class game_world():
         with open("saves/" + savename, "wb") as savefile:
             pickle.dump(data_dict,
                         savefile)
-        print("Progression Saved")
+
+        if not autosave:
+            print("Progression Saved")
 
     def load_world(self):
         """
         load attributes from specified pickle file
         """
-        savename = input("Choose a save to load:")
+        savename = input("Choose a save to load: ")
+
         with open("saves/" + savename, "rb") as savefile:
             attr_dict = pickle.load(savefile)
 
@@ -455,7 +458,6 @@ class game_world():
             show_all_stats(self.dragons_list)
 
     def main_town(self):
-
         txt = ["", "",
                "You're in the Town, where do you want to go?",
                "(A)rena    (S)hop",
@@ -474,7 +476,7 @@ class game_world():
             self.load_world()
             return self.main_town()
 
-        # Autosave
+        # Autosave each time the player go back to town and do something else.
         self.autosave()
         return self.town_choices[action]()
 
