@@ -154,7 +154,6 @@ def generate_dragon_values(name="",
     if not proficiency:
         dragon_values["proficiency"] = random.randint(1, 10)
 
-
     if not mp:
         dragon_values["mp"] = value_function(dragon_values["level"],
                                              a=dragon_values["proficiency"],
@@ -360,10 +359,18 @@ class game_world():
     main class to operate the game
     """
     def __init__(self):
+        # Attributes used in savefile:
         self.dragons_list = [generate_dragon()]
         self.maximum_dragons_list = 5
         self.inventory = []
         self.victory_token = 0
+        self.free_token = 0
+        self.dragon_of_doom = dragon(generate_dragon_values(name="Leviathan",
+                                                            elem_type="darkness",
+                                                            level=10))
+
+        # Static attributes:
+        #   Input choices per function:
         self.town_choices = {"a": self.arena,
                              "s": self.shop,
                              "b": self.breed,
@@ -388,14 +395,12 @@ class game_world():
                                      "f": self.team_manager_free,
                                      "g": self.main_town}
 
-        self.dragon_of_doom = dragon(generate_dragon_values(name="Leviathan",
-                                                            elem_type="darkness",
-                                                            level=10))
-
+        #   Ascii art:
         self.ascii_town = load_ascii("ascii_town.txt")
         self.ascii_shop = load_ascii("ascii_shop.txt")
         self.ascii_arena = load_ascii("ascii_arena.txt")
 
+        #   data_values:
         self.type_matrix = load_dict_yaml("matrix_elem.yaml")
 
         print("Welcome in Dragon of Doom !!!", "", "")
@@ -414,12 +419,15 @@ class game_world():
         save attribute in a pickle file
         """
         savename = input("Choose a savename:")
+        data_dict = {"dragons_list": self.dragons_list,
+                     "maximum_dragons_list": self.maximum_dragons_list,
+                     "inventory": self.inventory,
+                     "victory_token": self.victory_token,
+                     "free_token": self.free_token,
+                     "dragon_of_doom": self.dragon_of_doom}
+
         with open("saves/" + savename, "wb") as savefile:
-            pickle.dump([self.dragons_list,
-                         self.maximum_dragons_list,
-                         self.inventory,
-                         self.victory_token,
-                         self.dragon_of_doom],
+            pickle.dump(data_dict,
                         savefile)
         print("Progression Saved")
 
@@ -429,12 +437,11 @@ class game_world():
         """
         savename = input("Choose a save to load:")
         with open("saves/" + savename, "rb") as savefile:
-            attr_list = pickle.load(savefile)
-        self.dragon_list = attr_list[0]
-        self.maximum_dragons_list = attr_list[1]
-        self.inventory = attr_list[2]
-        self.victory_token = attr_list[3]
-        self.dragon_of_doom = attr_list[4]
+            attr_dict = pickle.load(savefile)
+
+        for key in attr_dict:
+            setattr(self, key, attr_dict[key])
+
         print("Save loaded.")
 
     def gw_quit(self):
@@ -446,11 +453,6 @@ class game_world():
             print("", "", "No dragons owned.")
         else:
             show_all_stats(self.dragons_list)
-        """
-        for d in self.dragons_list:
-            print("")
-            show_stats(d)
-        """
 
     def main_town(self):
 
@@ -462,13 +464,16 @@ class game_world():
                "(Q)uit"]
         print_list(self.ascii_town)
         print_list(txt)
+
         action = req_input(self.town_choices)
         if action == "sa":
             self.save_world()
             return self.main_town()
+
         elif action == "l":
             self.load_world()
             return self.main_town()
+
         # Autosave
         self.autosave()
         return self.town_choices[action]()
@@ -570,7 +575,7 @@ class game_world():
 
         action = req_input(["1", "2", "3", "g"])
         if action == "g":
-            return self.arena()
+            return self.arena(show_ascii=False)
         else:
             e_num = int(action)
             result = battle_instance(self.dragons_list[num-1],
@@ -709,7 +714,6 @@ class game_world():
             try:
                 d_a, d_b = action.split(" ")
                 new_type = self.type_matrix[self.dragons_list[int(d_a)-1].elem_type][self.dragons_list[int(d_b)-1].elem_type]
-                # new_type = self.dragons_list[int(d_b)-1].elem_type
                 new_d = dragon(generate_dragon_values(elem_type=new_type))
                 print(new_d.name + " is born")
                 show_all_stats([new_d])
