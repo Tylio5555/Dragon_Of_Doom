@@ -399,7 +399,7 @@ class game_world():
         print("Welcome in Dragon of Doom !!!", "", "")
 
     def autosave(self):
-        self.save_world(self, autosave=True)
+        self.save_world(autosave=True)
         """
         with open("saves/autosave", "wb") as savefile:
             pickle.dump([self.dragons_list,
