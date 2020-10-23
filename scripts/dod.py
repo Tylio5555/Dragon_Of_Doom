@@ -5,21 +5,21 @@ Created on Tue Oct 13 09:36:12 2020
 
 @author: Mickael MELKOWSKI
 """
-#For specific linux terminal use
-import sys
-sys.path.append("/usr/lib/python3/dist-packages/")
-
 import random
 import pickle
 import copy
 import yaml
 # import os
 import time
-
+# For specific linux terminal use
+import sys
+sys.path.append("/usr/lib/python3/dist-packages/")
 # Vol honteux de script pour pas faire dl de module
 # from prettytable import PrettyTable
-from prettyt import PrettyTable
-
+try:
+    from prettyt import PrettyTable
+except:
+    from prettytable import PrettyTable
 
 def xp_to_level(xp):
     """
