@@ -485,7 +485,7 @@ class game_world():
         txt = ["", "",
                "You're in the Team manager screen:",
                "You got " + str(self.victory_token) + " Victory Token.",
-               "Your maximum amount of Dragons is: " + self.maximum_dragons_list,
+               "Your maximum amount of Dragons is: " + str(self.maximum_dragons_list),
                "",
                "(B)reed    (F)ree",
                "(G)o back to town"]
